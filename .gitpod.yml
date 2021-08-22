@@ -1,0 +1,20 @@
+tasks:
+  - name: Dependencies
+    init: |
+      curl -sLo watchexec.deb https://github.com/watchexec/watchexec/releases/download/cli-v1.17.1/watchexec-1.17.1-x86_64-unknown-linux-gnu.deb
+      sudo dpkg -i watchexec.deb
+      rm watchexec.deb
+      docker-compose pull
+  - name: Build
+    init: make
+vscode:
+  extensions:
+    - golang.go
+    - ms-azuretools.vscode-docker
+    - eamodio.gitlens
+    - editorconfig.editorconfig
+github:
+  prebuilds:
+    branches: true
+    pullRequestsFromForks: true
+    addLabel: prebuilt-in-gitpod
