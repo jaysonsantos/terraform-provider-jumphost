@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  ssh:
+    image: linuxserver/openssh-server
+    ports:
+      - "22"
+  web:
+    image: "mccutchen/go-httpbin"
+    depends_on:
+      - ssh
