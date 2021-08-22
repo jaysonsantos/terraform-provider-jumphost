@@ -1,6 +1,6 @@
 .DS_Store
 
-terraform-provider-hashicups
+terraform-provider-jumphost
 bin
 
 # Local .terraform directories

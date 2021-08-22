@@ -2,8 +2,17 @@ version: '3.7'
 services:
   ssh:
     image: linuxserver/openssh-server
+    entrypoint:
+      - bash
+      - -exc
+    command:
+      - "sed 's/AllowTcpForwarding no/AllowTcpForwarding yes/' /etc/ssh/sshd_config  -i'' && exec /init"
+    environment:
+      - USER_PASSWORD=1234
+      - USER_NAME=terraform
+      - PASSWORD_ACCESS=true
     ports:
-      - "22"
+      - "2222"
   web:
     image: "mccutchen/go-httpbin"
     depends_on:

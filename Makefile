@@ -1,14 +1,20 @@
-TEST?=$$(go list ./... | grep -v 'vendor')
+TEST?=./...
 HOSTNAME=hashicorp.com
-NAMESPACE=edu
-NAME=hashicups
+NAMESPACE=jaysonsantos
+NAME=jumphost
 BINARY=terraform-provider-${NAME}
-VERSION=0.3
+VERSION=0.1
 OS_ARCH=darwin_amd64
+GO_MOD_FILES := go.mod go.sum
 
 default: install
 
-build:
+.cache/go-dependencies: $(GO_MOD_FILES)
+	go get -v ./...
+	mkdir -p .cache
+	touch .cache/go-dependencies
+
+build: .cache/go-dependencies
 	go build -o ${BINARY}
 
 release:
@@ -29,9 +35,8 @@ install: build
 	mkdir -p ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
 	mv ${BINARY} ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
 
-test: 
-	go test -i $(TEST) || exit 1                                                   
-	echo $(TEST) | xargs -t -n4 go test $(TESTARGS) -timeout=30s -parallel=4                    
+test:
+	go test $(TEST) $(TESTARGS) -timeout=30s -parallel=4 -v
 
-testacc: 
-	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m   
+testacc:
+	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m -v
