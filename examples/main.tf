@@ -1,59 +1,36 @@
 terraform {
   required_providers {
-    hashicups = {
-      versions = ["0.3"]
-      source = "hashicorp.com/edu/hashicups"
+    jumphost = {
+      version = "~> 0.0.1"
+      source  = "jaysonsantos/jumphost"
+    }
+    http = {
+      version = "~> 2.1"
+      source  = "hashicorp/http"
     }
   }
 }
 
-provider "hashicups" {
-  username = "dos"
-  password = "test123"
+provider "jumphost" {
+  hostname = "localhost"
+  username = "terraform"
+  port     = 2222
 }
 
-module "psl" {
-  source = "./coffee"
-
-  coffee_name = "Packer Spiced Latte"
+data "jumphost_ssh" "httpbin" {
+  hostname = "httpbin.org"
+  port     = "443"
 }
 
-output "psl" {
-  value = module.psl.coffee
-}
+data "http" "example" {
+  url = "https://localhost:${data.jumphost_ssh.httpbin.local_port}/get"
 
-data "hashicups_ingredients" "psl" {
-  coffee_id = values(module.psl.coffee)[0].id
-}
-
-# output "psl_i" {
-#   value = data.hashicups_ingredients.psl
-# }
-
-resource "hashicups_order" "new" {
-  items {
-    coffee {
-      id = 3
-    }
-    quantity = 2
-  }
-  items {
-    coffee {
-      id = 2
-    }
-    quantity = 2
+  # Optional request headers
+  request_headers = {
+    Accept = "application/json"
   }
 }
 
-output "new_order" {
-  value = hashicups_order.new
-}
-
-
-data "hashicups_order" "first" {
-  id = 1
-}
-
-output "first_order" {
-  value = data.hashicups_order.first
+output "host" {
+  value = jsondecode(data.http.example.body).headers.Host
 }

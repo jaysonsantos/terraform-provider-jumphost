@@ -1,37 +1,31 @@
 ---
-page_title: "Provider: HashiCups"
+page_title: "Provider: Jumphost"
 subcategory: ""
 description: |-
-  Terraform provider for interacting with HashiCups API.
+  Terraform provider for to deal with jumphosts, creating dynamic tunnels using data resources.
 ---
 
-# HashiCups Provider
-
--> Visit the [Call APIs with Terraform Providers](https://learn.hashicorp.com/collections/terraform/providers?utm_source=WEBSITE&utm_medium=WEB_IO&utm_offer=ARTICLE_PAGE&utm_content=DOCS) Learn tutorials for an interactive getting started experience.
-
-The HashiCups provider is used to interact with a fictional coffee-shop application, HashiCups. This provider is meant to serve as an educational tool to show users how:
-1. use providers to [create, read, update and delete (CRUD) resources](https://learn.hashicorp.com/tutorials/terraform/provider-use?in=terraform/providers) using Terraform.
-1. create a custom Terraform provider.
-
-To learn how to re-create the HashiCups provider, refer to the [Call APIs with Terraform Providers](https://learn.hashicorp.com/collections/terraform/providers?utm_source=WEBSITE&utm_medium=WEB_IO&utm_offer=ARTICLE_PAGE&utm_content=DOCS) Learn tutorials.
-
-Use the navigation to the left to read about the available resources.
+# Terraform Provider
+In case you have an infrastructure where you don't have a VPN and relies on jumphosts, this provider can help by connecting to the jumphost and creating arbitray connections by using data resources.
 
 ## Example Usage
 
 Do not keep your authentication password in HCL for production environments, use Terraform environment variables.
 
 ```terraform
-provider "hashicups" {
-  username = "education"
-  password = "test123"
-}
+	provider jumphost {
+		port = 22
+    hostname = "localhost"
+		username = "terraform"
+		password = "1234"
+	}
 ```
 
 ## Schema
 
 ### Optional
 
-- **username** (String, Optional) Username to authenticate to HashiCups API
-- **password** (String, Optional) Password to authenticate to HashiCups API
-- **host** (String, Optional) HashiCups API address (defaults to `localhost:19090`)
+- **hostname** (String, Optional) Jumphost's hostname (defaults to `localhost`)
+- **port** (Integer, Optional) Jumpost's port (defaults to `22`)
+- **username** (String, Optional) Username to authenticate to the jumphost (in future it will try to guess from ssh config)
+- **password** (String, Optional) Password to authenticate to the jumphost (can fallback to ssh agent)
