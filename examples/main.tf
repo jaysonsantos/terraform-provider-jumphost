@@ -19,11 +19,11 @@ provider "jumphost" {
 
 data "jumphost_ssh" "httpbin" {
   hostname = "httpbin.org"
-  port     = "443"
+  port     = "80"
 }
 
 data "http" "example" {
-  url = "https://localhost:${data.jumphost_ssh.httpbin.local_port}/get"
+  url = "http://localhost:${data.jumphost_ssh.httpbin.local_port}/get"
 
   # Optional request headers
   request_headers = {
@@ -33,4 +33,8 @@ data "http" "example" {
 
 output "host" {
   value = jsondecode(data.http.example.body).headers.Host
+}
+
+output "body_response" {
+  value = jsondecode(data.http.example.body)
 }
