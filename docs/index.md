@@ -14,8 +14,8 @@ Do not keep your authentication password in HCL for production environments, use
 
 ```terraform
 	provider jumphost {
-		port = 22
-    hostname = "localhost"
+		port 	 = 22
+    	hostname = "localhost"
 		username = "terraform"
 		password = "1234"
 	}
