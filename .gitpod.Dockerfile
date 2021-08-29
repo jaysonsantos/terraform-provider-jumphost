@@ -7,5 +7,5 @@ RUN curl -sLo watchexec.deb https://github.com/watchexec/watchexec/releases/down
     && unzip terraform.zip \
     && sudo mv terraform /usr/local/bin/ \
     && rm terraform.zip \
-    && go install honnef.co/go/tools/cmd/staticcheck \
+    && go install honnef.co/go/tools/cmd/staticcheck@latest \
     && go install github.com/go-delve/delve/cmd/dlv@latest
