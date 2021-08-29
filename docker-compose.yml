@@ -11,8 +11,11 @@ services:
       - USER_PASSWORD=1234
       - USER_NAME=terraform
       - PASSWORD_ACCESS=true
+      - PUBLIC_KEY_FILE=/fixtures/tests.pub
     ports:
       - "2222"
+    volumes:
+      - "./tests/fixtures:/fixtures"
   web:
     image: "mccutchen/go-httpbin"
     depends_on:
