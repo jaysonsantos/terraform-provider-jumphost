@@ -6,12 +6,14 @@ import (
 	"io"
 	"log"
 	"net"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/crypto/ssh"
+	"golang.org/x/crypto/ssh/agent"
 )
 
 type SshClient struct {
@@ -30,11 +32,20 @@ type SshTunnel struct {
 }
 
 func NewSshClient(hostname, username, password string, port int) SshClient {
+	authenticationMethods := []ssh.AuthMethod{
+		ssh.Password(password),
+	}
+	socket := os.Getenv("SSH_AUTH_SOCK")
+	conn, err := net.Dial("unix", socket)
+	if err != nil {
+		log.Printf("failed to connect to ssh agent %v", err)
+	} else {
+		agentClient := agent.NewClient(conn)
+		authenticationMethods = append(authenticationMethods, ssh.PublicKeysCallback(agentClient.Signers))
+	}
 	config := &ssh.ClientConfig{
 		User: username,
-		Auth: []ssh.AuthMethod{
-			ssh.Password(password),
-		},
+		Auth: authenticationMethods,
 		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
 			return nil
 		},
