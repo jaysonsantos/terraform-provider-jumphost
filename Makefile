@@ -1,10 +1,12 @@
 TEST?=./...
-HOSTNAME=hashicorp.com
+HOSTNAME=registry.terraform.io
 NAMESPACE=jaysonsantos
 NAME=jumphost
 BINARY=terraform-provider-${NAME}
-VERSION=0.1
-OS_ARCH=darwin_amd64
+VERSION=0.0.1
+CURRENT_OS:=$(shell uname | tr [A-Z] [a-z])
+CURRENT_ARCH:=$(shell uname -m | sed 's/x86_64/amd64/')
+OS_ARCH=$(CURRENT_OS)_$(CURRENT_ARCH)
 GO_MOD_FILES := go.mod go.sum
 
 default: install
