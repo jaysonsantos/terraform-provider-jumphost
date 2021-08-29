@@ -1,18 +1,11 @@
+image:
+  file: .gitpod.Dockerfile
 tasks:
   - name: Dependencies
     init: |
-      curl -sLo watchexec.deb https://github.com/watchexec/watchexec/releases/download/cli-v1.17.1/watchexec-1.17.1-x86_64-unknown-linux-gnu.deb
-      sudo dpkg -i watchexec.deb
-      rm watchexec.deb
-      terraform_version=1.0.5
-      curl -L https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip -o terraform.zip
-      unzip terraform.zip
-      sudo mv terraform /usr/local/bin/
-      rm terraform.zip
       eval $(ssh-agent)
+      chmod 600 tests/fixtures/tests
       ssh-add tests/fixtures/tests
-      go install honnef.co/go/tools/cmd/staticcheck
-      go install github.com/go-delve/delve/cmd/dlv@latest
       docker-compose pull
   - name: Build
     init: make
