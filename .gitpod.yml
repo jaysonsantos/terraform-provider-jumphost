@@ -1,9 +1,12 @@
 image:
   file: .gitpod.Dockerfile
 tasks:
+  - name: Go dependencies
+    init: |
+      go install honnef.co/go/tools/cmd/staticcheck@latest \
+      go install github.com/go-delve/delve/cmd/dlv@latest
   - name: Dependencies
     init: |
-      eval $(ssh-agent)
       chmod 600 tests/fixtures/tests
       ssh-add tests/fixtures/tests
       docker-compose pull
