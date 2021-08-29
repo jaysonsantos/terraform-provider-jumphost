@@ -12,7 +12,9 @@
             "program": "${workspaceFolder}",
             "args": [
                 "--debug"
-            ]
+            ],
+            "envFile": "${workspaceFolder}/.cache/env",
+            "preLaunchTask": "ssh-agent"
         }
     ]
 }
