@@ -5,6 +5,7 @@ bin
 
 # Local .terraform directories
 **/.terraform/*
+.terraform.lock.hcl
 
 # .tfstate files
 *.tfstate
@@ -39,3 +40,4 @@ terraform.rc
 terraform
 
 .cache/
+/__debug_bin
