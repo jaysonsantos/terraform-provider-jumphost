@@ -2,9 +2,10 @@ package jumphost
 
 import (
 	"context"
+	"sync"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"sync"
 )
 
 const (
@@ -12,6 +13,8 @@ const (
 	portAttr     = "port"
 	usernameAttr = "username"
 	passwordAttr = "password"
+	keyPairAttr  = "key"
+	agentAttr    = "use_agent"
 )
 
 var (
@@ -42,6 +45,15 @@ func Provider() *schema.Provider {
 				Optional:  true,
 				Sensitive: true,
 			},
+			keyPairAttr: {
+				Type:      schema.TypeString,
+				Optional:  true,
+				Sensitive: true,
+			},
+			agentAttr: {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"jumphost_ssh": dataSourceSsh(),
@@ -59,6 +71,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		d.Get(hostNameAttr).(string),
 		d.Get(usernameAttr).(string),
 		d.Get(passwordAttr).(string),
+		d.Get(keyPairAttr).(string),
+		d.Get(agentAttr).(bool),
 		port,
 	)
 	return &client, diags
