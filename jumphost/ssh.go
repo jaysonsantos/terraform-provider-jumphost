@@ -31,7 +31,7 @@ type SshTunnel struct {
 	ctx       context.Context
 }
 
-func NewSshClient(hostname, username, password string, keyPair string, useAgent bool, port int) SshClient {
+func NewSshClient(hostname, username, password, privateKey string, useAgent bool, port int) SshClient {
 	authenticationMethods := make([]ssh.AuthMethod, 0)
 	if password != "" {
 		authenticationMethods = append(authenticationMethods, ssh.Password(password))
@@ -40,17 +40,17 @@ func NewSshClient(hostname, username, password string, keyPair string, useAgent 
 	if useAgent {
 		agentConn, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK"))
 		if err != nil {
-			log.Printf("Failed to connect to ssh-agent: %s", err)
+			log.Printf("failed to connect to ssh-agent: %v", err)
 		} else {
 			client := agent.NewClient(agentConn)
 			authenticationMethods = append(authenticationMethods, ssh.PublicKeysCallback(client.Signers))
 		}
 	}
 
-	if keyPair != "" {
-		signer, err := ssh.ParsePrivateKey([]byte(keyPair))
+	if privateKey != "" {
+		signer, err := ssh.ParsePrivateKey([]byte(privateKey))
 		if err != nil {
-			log.Printf("Failed to parse private key: %s", err)
+			log.Printf("failed to parse private key: %v", err)
 		} else {
 			log.Printf("Successfully parsed private key: %s", signer.PublicKey().Marshal())
 			authenticationMethods = append(authenticationMethods, ssh.PublicKeys(signer))

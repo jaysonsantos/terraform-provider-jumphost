@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	hostNameAttr = "hostname"
-	portAttr     = "port"
-	usernameAttr = "username"
-	passwordAttr = "password"
-	keyPairAttr  = "key"
-	agentAttr    = "use_agent"
+	hostNameAttr   = "hostname"
+	portAttr       = "port"
+	usernameAttr   = "username"
+	passwordAttr   = "password"
+	privatekeyAttr = "private_key"
+	useAgentAttr   = "use_agent"
 )
 
 var (
@@ -45,14 +45,15 @@ func Provider() *schema.Provider {
 				Optional:  true,
 				Sensitive: true,
 			},
-			keyPairAttr: {
+			privatekeyAttr: {
 				Type:      schema.TypeString,
 				Optional:  true,
 				Sensitive: true,
 			},
-			agentAttr: {
+			useAgentAttr: {
 				Type:     schema.TypeBool,
 				Optional: true,
+				Default:  true,
 			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
@@ -71,8 +72,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		d.Get(hostNameAttr).(string),
 		d.Get(usernameAttr).(string),
 		d.Get(passwordAttr).(string),
-		d.Get(keyPairAttr).(string),
-		d.Get(agentAttr).(bool),
+		d.Get(privatekeyAttr).(string),
+		d.Get(useAgentAttr).(bool),
 		port,
 	)
 	return &client, diags

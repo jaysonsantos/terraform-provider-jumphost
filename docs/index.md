@@ -29,5 +29,5 @@ Do not keep your authentication password in HCL for production environments, use
 - **port** (Integer, Optional) Jumpost's port (defaults to `22`)
 - **username** (String, Optional) Username to authenticate to the jumphost (in future it will try to guess from ssh config)
 - **password** (String, Optional) Password to authenticate to the jumphost
-- **key** (String, Optional) Private key to authenticate to the jumphost
+- **private_key** (String, Optional) Private key to authenticate to the jumphost
 - **useAgent** (Bool, Optional) Use the SSH Agent to authenticate to the jumphost

@@ -77,13 +77,13 @@ func TestSingleConnectionUsingPassword(t *testing.T) {
 					address := fmt.Sprintf("http://localhost:%s/status/418", localPort)
 					response, err := http.Get(address)
 					if err != nil {
-						t.Fatalf("failed to call forwarded service %s", err)
+						t.Fatalf("failed to call forwarded service %v", err)
 					}
 					assert.Equal(t, response.StatusCode, 418)
 					var output bytes.Buffer
 					_, err = output.ReadFrom(response.Body)
 					if err != nil {
-						t.Fatalf("failed to read service's response %s", err)
+						t.Fatalf("failed to read service's response %v", err)
 					}
 					assert.Equal(t, output.String(), "I'm a teapot!")
 					return nil
@@ -92,6 +92,7 @@ func TestSingleConnectionUsingPassword(t *testing.T) {
 		},
 	})
 }
+
 func TestSingleConnectionUsingPublicKey(t *testing.T) {
 	resourceName := "data.jumphost_ssh.http_server"
 	resource.UnitTest(t, resource.TestCase{
@@ -106,13 +107,13 @@ func TestSingleConnectionUsingPublicKey(t *testing.T) {
 					address := fmt.Sprintf("http://localhost:%s/status/418", localPort)
 					response, err := http.Get(address)
 					if err != nil {
-						t.Fatalf("failed to call forwarded service %s", err)
+						t.Fatalf("failed to call forwarded service %v", err)
 					}
 					assert.Equal(t, response.StatusCode, 418)
 					var output bytes.Buffer
 					_, err = output.ReadFrom(response.Body)
 					if err != nil {
-						t.Fatalf("failed to read service's response %s", err)
+						t.Fatalf("failed to read service's response %v", err)
 					}
 					assert.Equal(t, output.String(), "I'm a teapot!")
 					return nil
