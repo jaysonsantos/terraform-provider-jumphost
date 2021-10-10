@@ -2,12 +2,14 @@ package jumphost
 
 import (
 	"bytes"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -51,5 +53,35 @@ func composeUp() {
 	sshPort, err = strconv.Atoi(port)
 	if err != nil {
 		panic(err)
+	}
+}
+
+func Test_currentUser(t *testing.T) {
+	currentUserCmd := exec.Command("whoami")
+	currentLocalUser, err := currentUserCmd.Output()
+	if err != nil {
+		t.Fatalf("failed to get current user %v", err)
+	}
+	tests := []struct {
+		name  string
+		want  string
+		setup func()
+	}{
+		{
+			name:  "current user",
+			want:  strings.TrimSpace(string(currentLocalUser)),
+			setup: func() { os.Setenv("SSH_USER", "") },
+		},
+		{
+			name:  "overriden user",
+			want:  "ssh-user",
+			setup: func() { os.Setenv("SSH_USER", "ssh-user") },
+		},
+	}
+	for _, tt := range tests {
+		tt.setup()
+		got, err := currentUser()
+		assert.Nil(t, err)
+		assert.Equal(t, got, tt.want)
 	}
 }

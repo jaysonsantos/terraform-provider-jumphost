@@ -139,10 +139,6 @@ func (s *SshClient) GetTunnel(ctx context.Context, d *schema.ResourceData) (*Ssh
 	return tunnel, nil
 }
 
-func getCacheKey(d *schema.ResourceData) string {
-	return ""
-}
-
 func pipeConnections(localConn, remoteConn net.Conn) {
 	go io.Copy(localConn, remoteConn)
 	go io.Copy(remoteConn, localConn)
