@@ -2,6 +2,9 @@ package jumphost
 
 import (
 	"context"
+	"fmt"
+	"os"
+	"os/user"
 	"sync"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -37,8 +40,9 @@ func Provider() *schema.Provider {
 				Default:  22,
 			},
 			usernameAttr: {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: currentUser,
 			},
 			passwordAttr: {
 				Type:      schema.TypeString,
@@ -61,6 +65,17 @@ func Provider() *schema.Provider {
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
+}
+
+func currentUser() (interface{}, error) {
+	if current := os.Getenv("SSH_USER"); current != "" {
+		return current, nil
+	}
+	current, err := user.Current()
+	if err != nil {
+		return "", fmt.Errorf("user was not specified and failed to get the current one %w", err)
+	}
+	return current.Username, nil
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
