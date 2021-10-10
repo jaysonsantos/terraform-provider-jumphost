@@ -13,7 +13,7 @@ const (
 	portAttr       = "port"
 	usernameAttr   = "username"
 	passwordAttr   = "password"
-	privatekeyAttr = "private_key"
+	privateKeyAttr = "private_key"
 	useAgentAttr   = "use_agent"
 )
 
@@ -45,7 +45,7 @@ func Provider() *schema.Provider {
 				Optional:  true,
 				Sensitive: true,
 			},
-			privatekeyAttr: {
+			privateKeyAttr: {
 				Type:      schema.TypeString,
 				Optional:  true,
 				Sensitive: true,
@@ -72,7 +72,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		d.Get(hostNameAttr).(string),
 		d.Get(usernameAttr).(string),
 		d.Get(passwordAttr).(string),
-		d.Get(privatekeyAttr).(string),
+		d.Get(privateKeyAttr).(string),
 		d.Get(useAgentAttr).(bool),
 		port,
 	)

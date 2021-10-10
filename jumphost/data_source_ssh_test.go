@@ -52,7 +52,7 @@ Na5SWQc9CxTRUmr26bf5AAAAC3Rlc3RzQGxvY2FsAQI=
 	provider jumphost {
 		port = %d
 		username = "terraform"
-		key = <<EOT
+		private_key = <<EOT
 %s
 EOT
 	}
