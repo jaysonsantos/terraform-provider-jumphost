@@ -2,7 +2,11 @@ package jumphost
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log"
+	"math"
+	"net"
 	"strconv"
 	"time"
 
@@ -58,6 +62,22 @@ func dataSourceSshRead(ctx context.Context, d *schema.ResourceData, m interface{
 	err = d.Set(localPortAttr, tunnel.LocalPort)
 	if err != nil {
 		diags = append(diags, diag.FromErr(fmt.Errorf("failed to set local_port %w", err))...)
+	}
+
+	for try := 0; try < 4; try++ {
+		_, err := net.Dial("tcp", fmt.Sprintf("127.0.0.1:%d", tunnel.LocalPort))
+		if err == nil {
+			break
+		}
+		if errors.Is(err, net.ErrClosed) {
+			sleepTime := math.Pow(float64(time.Millisecond*100), float64(try))
+			log.Printf("[DEBUG] connection refused, retrying in %v second", sleepTime)
+			time.Sleep(time.Duration(sleepTime))
+		} else {
+			log.Printf("[DEBUG] err %v", err)
+			diags = append(diags, diag.FromErr(fmt.Errorf("failed to connect on ssh tunnel %w", err))...)
+			break
+		}
 	}
 
 	return diags
